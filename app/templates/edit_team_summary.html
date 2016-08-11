@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block page_contest %}
+<div class="container">
+	{% for errs in form.errors.values() %}
+	{% for e in errs %}
+	<div class="alert alert-danger" role='alert'>{{e}}</div>
+	{% endfor %}
+	{% endfor %}
+	<h1>编辑队伍做题情况</h1>
+	<hr/>
+	<form class="form-horizontal col-md-6" action="{{url_for('edit_team_summary', id = tid, cid = cid)}}" method="POST">
+		{{ form.hidden_tag() }}
+		<div class="form-group">
+			<label class="col-sm-2"> 
+				{{form.team_name.label}}
+			</label>
+			<div class="col-sm-10">
+				{{form.team_name(class="form-control")}}
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2"> 
+				{{form.rank.label}}
+			</label>
+			<div class="col-sm-10">
+				{{form.rank(class_="form-control")}}
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2"> 
+				{{form.team_member1.label}}
+			</label>
+			<div class="col-sm-10">
+				{{form.team_member1(class_="form-control")}}
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2"> 
+				{{form.team_member2.label}}
+			</label>
+			<div class="col-sm-10">
+				{{form.team_member2(class_="form-control")}}
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2"> 
+				{{form.team_member3.label}}
+			</label>
+			<div class="col-sm-10">
+				{{form.team_member3(class_="form-control")}}
+			</div>
+		</div>
+
+		<table class="table">
+			<caption> <h4> 做题情况 </h4> </caption>
+
+			<tr>
+				<th> </th>
+				{% for i in range(countp) %}
+				<th> {{loop.index | chr2}} </th>
+				{% endfor %}
+			</tr>
+			<tr>
+				<th> 队员A </th>
+				<div class="form-group">
+					{% for i in range(countp) %}
+					<td class="col-sm-1">
+						{{form.A.entries[i](class_="form-control")}}
+					</td>
+					{% endfor %}
+				</div>
+			</tr>
+
+			<tr>
+				<th> 队员B </th>
+				<div class="form-group">
+					{% for i in range(countp) %}
+					<td class="col-sm-1">
+						{{form.B.entries[i](class_="form-control")}}
+					</td>
+					{% endfor %}
+				</div>
+			</tr>
+
+			<tr>
+				<th> 队员C </th>
+				<div class="form-group">
+					{% for i in range(countp) %}
+					<td class="col-sm-1">
+						{{form.C.entries[i](class_="form-control")}}
+					</td>
+					{% endfor %}
+				</div>
+			</tr>
+
+			<tr>
+				<th> Accepted </th>
+				<div class="form-group">
+					{% for item in form.AC %}
+					<td class="col-sm-1">
+						{{item(class_="form-control")}}
+					</td>
+					{% endfor %}
+				</div>
+			</tr>
+
+			<tr>
+				<th> 还未AC </th>
+				<div class="form-group">
+					{% for item in form.NA %}
+					<td class="col-sm-1">
+						{{item(class_="form-control")}}
+					</td>
+					{% endfor %}
+				</div>
+			</tr>
+
+			<tr>
+				<th> 赛后AC </th>
+				<div class="form-group">
+					{% for item in form.SC %}
+					<td class="col-sm-1">
+						{{item(class_="form-control")}}
+					</td>
+					{% endfor %}
+				</div>
+			</tr>
+
+		</table>
+
+		<div class="col-sm-2 form-group text-center">
+			{{form.submit(class="btn btn-default")}}
+		</div>
+	</form>
+</div>
+
+{% endblock %}
+
+

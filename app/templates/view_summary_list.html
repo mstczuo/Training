@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block page_contest %}
+
+<div class="container">
+	<h3 class="center-text"> 集训做表 
+		<button class="btn btn-warning" onclick="window.location.href='{{url_for('edit_summary_info')}}'">添加</button>
+	</h3>
+	<table class="table table-striped table-hover">
+		<tr>
+			<th> 比赛名称 </th>
+			<th> 题目来源 </th>
+			{% if logged_in %}
+			<th> 管理 </th>
+			{% endif %}
+		</tr>
+		{% for contest in summary %}
+		<tr> 
+			<td> 
+				<a href="{{url_for('view_contest_summary', id = contest.id)}}"> {{ contest.name }} </a>
+			</td>
+			<td> 
+				{{ contest.source }}
+			</td>
+			{% if logged_in %}
+			<td> 
+				<a href="{{ url_for('edit_summary_info' ,id=contest.id) }}">编辑</a>
+				<!--a href="{{ url_for('delete_contest_summary' ,cid=contest.id) }}">删除</a-->
+			</td>
+			{% endif %}
+		</tr>
+		{% endfor %}
+	</table>
+</div>
+{% endblock %}
+

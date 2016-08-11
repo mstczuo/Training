@@ -1,0 +1,71 @@
+{% extends 'bootstrap/base.html' %}
+
+{% set logged_in = current_user.is_authenticated %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="/static/css/main.css"/>
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-inverse navbar-fixed-top">
+<div class="container">
+	<div class="navbar-header">
+		<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+			<span class="sr-only">Toggle navigation</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		</button>
+		<a class="navbar-brand" href="#">SYSU Training System</a>
+	</div>
+	<div id="navbar" class="collapse navbar-collapse">
+		<ul class="nav navbar-nav">
+			<li class="active"><a href="/">Home</a></li>
+			<li><a href="/view_members">Members</a></li>
+			<li><a href="/about">About</a></li>
+		</ul>
+		<ul class="nav navbar-nav pull-right">
+			{% if not logged_in %}
+			<li><a href="{{url_for('login')}}">Log In</a></li>
+			<li><a href="{{url_for('register')}}">Register</a></li>
+			{% else %}
+			<li><a>{{current_user.username }}</a></li>
+			<li><a href="{{url_for('logout')}}"> Logout</a></li>
+			{% endif %}
+		</ul>
+	</div>
+</div>
+</nav>
+{% endblock %}
+
+{% macro render_flashed_messages(message_categories, alert_type) %}
+{% with messages = get_flashed_messages(category_filter=message_categories) %}
+{% if messages %}
+{% for msg in messages %}
+<div class="alert {{alert_type}}" role="alert">
+	<button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	{{ msg }}
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% endmacro %}
+
+{% block content %}
+{% block flashed_messages %}
+<div class="container">
+	{{ render_flashed_messages(['message'], 'alert-success') }}
+	{{ render_flashed_messages(['warning'], 'alert-warning') }}
+	{{ render_flashed_messages(['error'], 'alert-danger') }}
+</div>
+{% endblock %}
+{% block page_contest %}
+{% endblock %}
+<hr/>
+
+<div id="footer" style="text-align:center">
+	<p> 中山大学 ACM 训练总结系统 </p>
+</div>
+{% endblock %}
+

@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block page_contest %}
+    <div class="container">
+        {% for errs in form.errors.values() %}
+            {% for e in errs %}
+                <div class="alert alert-danger" role='alert'>{{e}}</div>
+            {% endfor %}
+        {% endfor %}
+        <h1>编辑比赛</h1>
+	<hr/>
+        <form class="form-horizontal col-md-6" action="{{url_for('edit_summary_info', id = cid)}}" method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+				<label class="col-sm-2"> 
+					{{form.name.label}}
+				</label>
+				<div class="col-sm-10">
+					{{form.name(class="form-control")}}
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2"> 
+					{{form.source.label}}
+				</label>
+				<div class="col-sm-10">
+					{{form.source(class_="form-control")}}
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2"> 
+					{{form.date.label}}
+				</label>
+				<div class="col-sm-10">
+					{{form.date(class_="form-control")}}
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2"> 
+					{{form.countp.label}}
+				</label>
+				<div class="col-sm-10">
+					{{form.countp(class_="form-control")}}
+				</div>
+			</div>
+
+<div class="modal fade board-info" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+<div class="modal-dialog modal-sm">
+<div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">添加Board！</h4>
+      </div>
+      <div class="modal-body">
+{{form.board(class_="form-coltrol", style="width:100%; height:100%;")}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <!--button type="button" class="btn btn-primary">Save changes</button-->
+      </div>
+</div>
+</div>
+</div>
+
+			<div class="col-sm-2 form-group text-center">
+				{{form.submit(class="btn btn-default")}}
+			</div>
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".board-info">添加Board详细信息</button>
+		</form>
+	</div>
+	
+
+	{% if cid %}
+    	<div class="container">
+		<h1>
+			更改队伍信息 
+			<button class="btn btn-warning" onclick="window.location.href='{{url_for('edit_team_summary', cid = cid)}}'">添加队伍 </button> 
+		</h1>
+		{% if teams %}
+		<table class="table">
+			<tr>
+				<th> 队伍名 </th>
+				<th colspan=3> 队员 </th>
+				<th> 管理 </th>
+			</tr>
+			{% for team in teams %}
+			<tr>
+				<td> {{team.team_name}} </td>
+				<td> {{team.member1.name}} </td>
+				<td> {{team.member2.name}} </td>
+				<td> {{team.member3.name}} </td>
+				<td> 
+					<a href="{{url_for('edit_team_summary', cid = cid, id = team.id)}}">编辑</a> 
+					/
+					<a href="{{url_for('delete_team_summary', cid = cid, id = team.id)}}">删除</a> 
+				</td>
+			</tr>
+			{% endfor %}
+		</table>
+		{% endif %}
+	</div>
+	{% endif %}
+{% endblock %}
+

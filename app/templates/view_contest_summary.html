@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block page_contest %}
+
+<div class="container">
+	<h3> {{ contest_summary.name }} </h3>
+	<h5> {{ contest_summary.source }} </h5>
+
+	{% for team in team_summary %}
+	<p>
+	{{team.team_name}} : {{team.member1.name}} {{team.member2.name}} {{team.member3.name}}
+	</p>
+	{% endfor %}
+
+	<h3> 做题情况 </h3>
+	<table class="table table-bordered table-hover">
+	<tr>
+		<th> 
+			Team
+		</th>
+		{% for i in range(contest_summary.countp) %}
+		<th>
+			{{ loop.index | chr2 }}
+		</th>
+		{% endfor %}
+	</tr>
+
+	{% for team in team_summary %}
+	<tr>
+		<td>
+			{{ team.team_name }}
+		</td>
+		{% set info = team.acinfo | eval %}
+		{% for i in range(contest_summary.countp) %}
+			{% if info[3][i] %} 
+			<td style="color:green">
+			{% elif info[5][i] %}
+			<td style="color:red">
+			{% else %}
+			<td style="color:blue">
+			{% endif %}
+				{% if info[0][i] %} {{ team.member1.name }} {% endif %}
+				{% if info[1][i] %} {{ team.member2.name }} {% endif %}
+				{% if info[2][i] %} {{ team.member3.name }} {% endif %}
+			</td>
+		{% endfor %}
+	</tr>
+	{% endfor %}
+	</table>
+
+	<h3> 比赛Board </h3>
+	<table class="table table-bordered table-hover">
+	{% for row in board %}
+	<tr>
+		{% for col in row %}
+		<td> {{col}} </td>
+		{% endfor %}
+	</tr>
+	{% endfor %}
+	</table>
+	
+</div>
+
+{% endblock %}
+

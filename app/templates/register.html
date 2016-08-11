@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block page_contest %}
+
+{% for errs in form.errors.values() %}
+	{% for e in errs %}
+		<div class="alert alert-danger" role='alert'>{{e}}</div>
+	{% endfor %}
+{% endfor %}
+
+<div class="container">
+	<h2 class="page-header">注册</h2>
+	<div class="row placeholders">
+		<div class="col-sm-8">
+			<form class="form-horizontal" method="POST">
+				{{ form.hidden_tag() }}
+				<div class="form-group">
+					<label for="wage_base" class="col-sm-2 control-label">
+						{{form.username.label}}
+					</label>
+					<div class="col-sm-4">
+						{{form.username(class="form-control",id="Name",placeholder="")}}
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="wage_base" class="col-sm-2 control-label">
+						{{form.password.label}}
+					</label>
+					<div class="col-sm-4">
+						{{form.password(class="form-control",type="password")}}
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="wage_base" class="col-sm-2 control-label">
+						{{form.confirm.label}}
+					</label>
+					<div class="col-sm-4">
+						{{form.confirm(class="form-control",type="password")}}
+					</div>
+				</div>
+				<div class="col-sm-8">
+					{{form.submit(class="btn btn-default")}}
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+

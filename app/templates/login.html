@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block page_contest %}
+    <div class="container">
+        {% for errs in form.errors.values() %}
+            {% for e in errs %}
+                <div class="alert alert-danger" role='alert'>{{e}}</div>
+            {% endfor %}
+        {% endfor %}
+        <h1>登陆</h1>
+        <form class="form-horizontal col-md-6" action="{{url_for('login')}}" method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+				<label class="col-sm-2"> 
+					{{form.username.label}}
+				</label>
+				<div class="col-sm-10">
+					{{form.username(class="form-control")}}
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2"> 
+					{{form.password.label}}
+				</label>
+				<div class="col-sm-10">
+					{{form.password(class_="form-control",style="password")}}
+				</div>
+			</div>
+			<div class="col-sm-2 form-group text-center">
+				{{form.submit(class="btn btn-default")}}
+			</div>
+		</form>
+	</div>
+
+{% endblock %}
