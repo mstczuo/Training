@@ -1,0 +1,5 @@
+# The database
+app.db
+
+# Database repository
+db_repository/
