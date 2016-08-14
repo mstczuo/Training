@@ -90,6 +90,10 @@ def view_contest_summary(id):
 	items = TeamSummary.query.filter(TeamSummary.contest_id == id).all()
 	items.sort(key = lambda u:u.rank)
 	board = map(lambda u:u.rstrip('\r').split('\t'), item.board.split('\n'))
+	for x in board:
+		while len(x) > item.countp + 4:
+			x.pop()
+	print board
 	return render_template('view_contest_summary.html', 
 			contest_summary = item,
 			team_summary = items,
