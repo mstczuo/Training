@@ -137,3 +137,55 @@ def delete_contest_summary(cid):
 		flash(u'比赛删除失败', category='error')
 	return redirect(url_for('index'))
 
+@app.route('/rate')
+def rate_summary():
+    items = TeamSummary.query.filter().all()
+
+    contests = set(map(lambda u: u.contest_id, items))
+    logs = dict()
+    for c in contests:
+        logs[c] = sorted(map(lambda u: [u.rank, u.team_name], filter(lambda u: u.contest_id == c, items)))
+    teamnames = sorted(list(set(map(lambda u: u.team_name.replace('Team', 'team').replace('kir', 'team1'), items))))
+
+    history_rate = dict()
+    for name in teamnames:
+        history_rate[name] = [1500.0]
+    rate = dict()
+    for name in teamnames:
+        rate[name] = 1500.0
+    K = 16
+    for c in contests:
+        new_rate = dict()
+        for name in teamnames:
+            new_rate[name] = rate[name]
+        n = len(logs[c])
+        for i in range(n):
+            for j in range(n):
+                if i >= j:
+                    continue
+                a = logs[c][i][1].replace('Team', 'team').replace('kir', 'team1')
+                b = logs[c][j][1].replace('Team', 'team').replace('kir', 'team1')
+                q_a = 10 ** (rate[a] / 400)
+                q_b = 10 ** (rate[b] / 400)
+                e_a = q_a / (q_a + q_b)
+                e_b = q_b / (q_a + q_b)
+                new_rate[a] = new_rate[a] + K * (1 - e_a)
+                new_rate[b] = new_rate[b] + K * (0 - e_b)
+        for name in teamnames:
+            rate[name] = new_rate[name]
+            history_rate[name].append(rate[name])
+
+    st = 'datasets:['
+    hue = 0
+    n = len(teamnames)
+    for name in teamnames:
+        s = '{label:"' + name + '",fill:false,borderColor:"hsl(' + str(hue) + ',100%,50%)",data:['
+        hue += 360 / n
+        for i in range(len(history_rate[name])):
+            s += '{x:' + str(i) + ',y:' + str(history_rate[name][i]) + '},'
+        s = s[:len(s) - 1] + ']'
+        s += '},'
+        st += s
+    st = st[:len(st) - 1] + ']'
+
+    return render_template('rate.html', data = st)
