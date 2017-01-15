@@ -1,5 +1,5 @@
 #-*-coding:utf-8-*-
-from flask.ext.wtf import Form
+from flask_wtf import Form
 from flask import request
 from wtforms import StringField, BooleanField, ValidationError
 from wtforms.validators import *

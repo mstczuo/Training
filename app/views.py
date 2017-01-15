@@ -1,6 +1,6 @@
 #-*-coding:utf-8-*-
 from flask import render_template, flash, redirect, session, url_for, request, g, send_from_directory
-from flask.ext.login import login_user, logout_user, current_user, login_required
+from flask_login import login_user, logout_user, current_user, login_required
 from app import app, db, login_manager
 from .forms import *
 from .models import *
@@ -93,7 +93,6 @@ def view_contest_summary(id):
 	for x in board:
 		while len(x) > item.countp + 4:
 			x.pop()
-	print board
 	return render_template('view_contest_summary.html', 
 			contest_summary = item,
 			team_summary = items,
@@ -138,6 +137,7 @@ def delete_contest_summary(cid):
 	return redirect(url_for('index'))
 
 @app.route('/rate')
+@login_required
 def rate_summary():
     items = TeamSummary.query.filter().all()
 

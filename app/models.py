@@ -1,6 +1,6 @@
 #-*- coding:utf-8 -*-
 from app import db, login_manager
-from flask.ext.login import UserMixin, AnonymousUserMixin
+from flask_login import UserMixin, AnonymousUserMixin
 
 class User(UserMixin, db.Model):
 	id = db.Column(db.Integer, primary_key = True)
