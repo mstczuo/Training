@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 
 {% block styles %}
-{{ super() }}<script src="/static/js/Chart.js"></script>
+{{ super() }}<link rel="stylesheet" href="/static/css/jquery-ui.min.css"/>
+<style>
+#slider-block {
+    padding-top: 20px;
+}
+</style>
 {% endblock %}
 
 {% block page_contest %}
@@ -10,16 +15,49 @@
         <div class="col-lg-12">
             <canvas id="graph"></canvas>
         </div>
+        <div id="slider-block" class="col-lg-12">
+            <div id="slider"></div>
+        </div>
     </div>
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="/static/js/Chart.js"></script>
+<script src="/static/js/jquery-ui.min.js"></script>
 <script type="text/javascript">
 var ctx = document.getElementById("graph").getContext("2d");
 
 var chart = new Chart(ctx, {
     type: 'line',
-    data: { {{ data|safe }} },
+    data: { datasets: {{ data|safe }} },
     options: {
+        tooltips: {
+            titleFontSize: 20,
+            bodyFontSize: 18,
+            xPadding: 12,
+            yPadding: 12,
+            mode: 'single',
+            callbacks: {
+                title: function(tooltipItems, data) {
+                    return data.datasets[tooltipItems[0].datasetIndex].label;
+                },
+                label: function(tooltipItems, data) {
+                    return '[' + tooltipItems.xLabel + '] ' + data.datasets[0].data[tooltipItems.index].n;
+                },
+                labelColor: function() {
+                    return {
+                        borderColor: "rgba(0,0,0,1)",
+                        backgroundColor: "rgba(0,0,0,1)"
+                    };
+                },
+                afterBody: function(tooltipItems, data) {
+                    return 'Rate: ' + tooltipItems[0].yLabel;
+                }
+            }
+        },
         scales: {
             xAxes: [{
                 type: 'linear',
@@ -29,5 +67,28 @@ var chart = new Chart(ctx, {
     }
 });
 </script>
+
+<script>
+$(document).ready(function() {
+    $('#slider').slider({
+        range: true,
+        min: {{ slider.min }},
+        max: {{ slider.max }},
+        values: [{{ slider.left }}, {{slider.right}}],
+		slide: function (event, ui) {
+			l = ui.values[0];
+			r = ui.values[1];
+			url = '/rate_data/' + l + '/' + r
+			var xmlHttp = new XMLHttpRequest();
+			xmlHttp.open('GET', url, false);
+			xmlHttp.send();
+			res = xmlHttp.responseText;
+			chart.data.datasets = JSON.parse(res);
+			chart.update();
+		}
+    });
+});
+</script>
+
 
 {% endblock %}

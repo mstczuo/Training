@@ -4,7 +4,8 @@ from flask_login import login_user, logout_user, current_user, login_required
 from app import app, db, login_manager
 from .forms import *
 from .models import *
-import os
+from copy import deepcopy
+import os, json
 
 @app.before_request
 def before_request():
@@ -35,9 +36,9 @@ def register():
 
 @app.route('/logout')
 def logout():
-    session.clear()
-    logout_user()
-    return redirect('/')
+	session.clear()
+	logout_user()
+	return redirect('/')
 
 @app.route('/')
 def index():
@@ -93,10 +94,10 @@ def view_contest_summary(id):
 	for x in board:
 		while len(x) > item.countp + 4:
 			x.pop()
-	return render_template('view_contest_summary.html', 
-			contest_summary = item,
-			team_summary = items,
-			board = board)
+	return render_template('view_contest_summary.html',
+		contest_summary = item,
+		team_summary = items,
+		board = board)
 
 @app.route('/edit_team_summary/<int:cid>/', methods=['POST', 'GET'])
 @app.route('/edit_team_summary/<int:cid>/id/<int:id>', methods=['POST', 'GET'])
@@ -136,56 +137,66 @@ def delete_contest_summary(cid):
 		flash(u'比赛删除失败', category='error')
 	return redirect(url_for('index'))
 
-@app.route('/rate')
+@app.route('/rate', defaults = {'begin': 27, 'end': len(ContestSummary.query.filter().all())})
+@app.route('/rate/<int:begin>/<int:end>')
 @login_required
-def rate_summary():
-    items = TeamSummary.query.filter().all()
+def rate_summary(begin, end):
+	return render_template('rate.html',
+		data = get_rate_data(begin, end),
+		slider = {
+			'min': 0,
+			'max': len(ContestSummary.query.filter().all()) - 1,
+			'left': begin,
+			'right': end
+		}
+	)
 
-    contests = set(map(lambda u: u.contest_id, items))
-    logs = dict()
-    for c in contests:
-        logs[c] = sorted(map(lambda u: [u.rank, u.team_name], filter(lambda u: u.contest_id == c, items)))
-    teamnames = sorted(list(set(map(lambda u: u.team_name.replace('Team', 'team').replace('kir', 'team1'), items))))
+@app.route('/rate_data/<int:begin>/<int:end>')
+@login_required
+def get_rate_data(begin, end):
+	items = TeamSummary.query.filter().all()
+	contests = set(map(lambda u: u.contest_id, items))
+	contests = list(contests)[begin:end]
+	contest_name = dict(map(lambda u: (u.id, u.name), ContestSummary.query.filter().all()))
+	logs = dict(map(lambda c: (c, sorted(map(lambda u: [u.rank, u.team_name], filter(lambda u: u.contest_id == c, items)))), contests))
+	teamnames = sorted(list(set(map(lambda u: u.team_name.replace('Team', 'team').replace('kir', 'team1'), items))))
 
-    history_rate = dict()
-    for name in teamnames:
-        history_rate[name] = [1500.0]
-    rate = dict()
-    for name in teamnames:
-        rate[name] = 1500.0
-    K = 16
-    for c in contests:
-        new_rate = dict()
-        for name in teamnames:
-            new_rate[name] = rate[name]
-        n = len(logs[c])
-        for i in range(n):
-            for j in range(n):
-                if i >= j:
-                    continue
-                a = logs[c][i][1].replace('Team', 'team').replace('kir', 'team1')
-                b = logs[c][j][1].replace('Team', 'team').replace('kir', 'team1')
-                q_a = 10 ** (rate[a] / 400)
-                q_b = 10 ** (rate[b] / 400)
-                e_a = q_a / (q_a + q_b)
-                e_b = q_b / (q_a + q_b)
-                new_rate[a] = new_rate[a] + K * (1 - e_a)
-                new_rate[b] = new_rate[b] + K * (0 - e_b)
-        for name in teamnames:
-            rate[name] = new_rate[name]
-            history_rate[name].append(rate[name])
+	history_rate = dict(map(lambda name: (name, [['Initial', 1500.0]]), teamnames))
+	rate = dict(map(lambda name: (name, 1500.0), teamnames))
+	K = 16
+	for c in contests:
+		new_rate = deepcopy(rate)
+		n = len(logs[c])
+		for i in range(n):
+			for j in range(n):
+				if i >= j:
+					continue
+				a = logs[c][i][1].replace('Team', 'team').replace('kir', 'team1')
+				b = logs[c][j][1].replace('Team', 'team').replace('kir', 'team1')
+				q_a = 10 ** (rate[a] / 400)
+				q_b = 10 ** (rate[b] / 400)
+				e_a = q_a / (q_a + q_b)
+				e_b = q_b / (q_a + q_b)
+				new_rate[a] = new_rate[a] + K * (1 - e_a)
+				new_rate[b] = new_rate[b] + K * (0 - e_b)
+		rate = deepcopy(new_rate)
+		for name in teamnames:
+			history_rate[name].append([contest_name[c], rate[name]])
 
-    st = 'datasets:['
-    hue = 0
-    n = len(teamnames)
-    for name in teamnames:
-        s = '{label:"' + name + '",fill:false,borderColor:"hsl(' + str(hue) + ',100%,50%)",data:['
-        hue += 360 / n
-        for i in range(len(history_rate[name])):
-            s += '{x:' + str(i) + ',y:' + str(history_rate[name][i]) + '},'
-        s = s[:len(s) - 1] + ']'
-        s += '},'
-        st += s
-    st = st[:len(st) - 1] + ']'
+	res = []
+	hue = 0
+	for name in teamnames:
+		hr = history_rate[name]
+		res.append({
+			'label': name,
+			'fill': False,
+			'borderColor': 'hsl(%d, 100%%, 50%%)' % hue,
+			'data': list(map(lambda u: {
+				'x': u[0],
+				'y': u[1][1],
+				'n': u[1][0]
+			}, enumerate(hr)))
+		})
+		hue += 360 / len(teamnames)
 
-    return render_template('rate.html', data = st)
+	return json.dumps(res)
