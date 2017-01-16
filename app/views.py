@@ -145,7 +145,7 @@ def rate_summary(begin, end):
 		data = get_rate_data(begin, end),
 		slider = {
 			'min': 0,
-			'max': len(ContestSummary.query.filter().all()) - 1,
+			'max': len(ContestSummary.query.filter().all()),
 			'left': begin,
 			'right': end
 		}
@@ -155,9 +155,10 @@ def rate_summary(begin, end):
 @login_required
 def get_rate_data(begin, end):
 	items = TeamSummary.query.filter().all()
-	contests = set(map(lambda u: u.contest_id, items))
-	contests = list(contests)[begin:end]
-	contest_name = dict(map(lambda u: (u.id, u.name), ContestSummary.query.filter().all()))
+	contest_items = ContestSummary.query.filter().all()
+	contests = sorted(list(map(lambda u: (u.date, u.id), contest_items)))
+	contests = list(map(lambda u: u[1], contests))[begin:end]
+	contest_name = dict(map(lambda u: (u.id, u.name), contest_items))
 	logs = dict(map(lambda c: (c, sorted(map(lambda u: [u.rank, u.team_name], filter(lambda u: u.contest_id == c, items)))), contests))
 	teamnames = sorted(list(set(map(lambda u: u.team_name.replace('Team', 'team').replace('kir', 'team1'), items))))
 
