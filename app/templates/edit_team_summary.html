@@ -8,20 +8,6 @@
 	{% endfor %}
 	{% endfor %}
 
-    <script>
-function work(i) {
-    for (i = 1; i <= 3; ++i) {
-        a = $("#team_member" + i)[0];
-        $("#member" + i)[0].textContent = a.options[a.value].textContent;
-    }
-}
-$(document).ready(function() {
-    work();
-    for (i = 1; i <= 3; ++i)
-       $("#team_member" + i)[0].onchange = work; 
-});
-    </script>
-
 	<h1>编辑队伍做题情况</h1>
 	<hr/>
 	<form class="form-horizontal" action="{{url_for('edit_team_summary', id = tid, cid = cid)}}" method="POST">
@@ -155,4 +141,20 @@ $(document).ready(function() {
 
 {% endblock %}
 
+{% block scripts %}
+{{ super() }}
+<script>
+function work(i) {
+    for (i = 1; i <= 3; ++i) {
+        a = $("#team_member" + i)[0];
+        $("#member" + i)[0].textContent = a.options[a.value].textContent;
+    }
+}
+$(document).ready(function() {
+    work();
+    for (i = 1; i <= 3; ++i)
+       $("#team_member" + i)[0].onchange = work; 
+});
+</script>
 
+{% endblock %}
