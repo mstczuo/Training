@@ -201,3 +201,8 @@ def get_rate_data(begin, end):
 		hue += 360 / len(teamnames)
 
 	return json.dumps(res)
+
+@app.route('/count/<username>')
+def count(username):
+	from app.oj import get_all
+	return render_template('count.html', username = username, data = get_all(username))
