@@ -111,5 +111,3 @@ class TeamInfoForm(Form):
 			self.AC.entries[i].data = value[3][i]
 			self.NA.entries[i].data = value[4][i]
 			self.SC.entries[i].data = value[5][i]
-		print str([self.A.data, self.B.data, self.C.data, self.AC.data, self.NA.data, self.SC.data])
-

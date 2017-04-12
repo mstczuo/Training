@@ -15,7 +15,7 @@ env.filters['eval'] = eval
 env.filters['chr2'] = lambda x: chr(x + 64)
 
 login_manager = LoginManager(app)
-from models import AnonymousUser 
+from app.models import AnonymousUser 
 login_manager.anonymous_user = AnonymousUser
 login_manager.login_view = 'login'
 login_manager.login_message = u'你需要登录才能查看本页面'

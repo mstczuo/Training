@@ -90,7 +90,7 @@ def view_contest_summary(id):
 	item = ContestSummary.query.get_or_404(id)
 	items = TeamSummary.query.filter(TeamSummary.contest_id == id).all()
 	items.sort(key = lambda u:u.rank)
-	board = map(lambda u:u.rstrip('\r').split('\t'), item.board.split('\n'))
+	board = list(map(lambda u:u.rstrip('\r').split('\t'), item.board.split('\n')))
 	for x in board:
 		while len(x) > item.countp + 4:
 			x.pop()
