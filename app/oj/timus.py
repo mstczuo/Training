@@ -13,7 +13,7 @@ def get(username):
         return {'error': 'user not found'}
     r = re.findall(r'Problems solved.+?author.+?(\d+) out of (\d+)', s.text)
     try:
-        return {'solved': r[0][0], 'attempts': r[0][1]}
+        return {'solved': r[0][0], 'attempts': 0}
     except IndexError:
         return {'error': 'unknown error'}
 

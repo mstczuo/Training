@@ -1,1 +1,1 @@
-oj_list = ['poj', 'zoj', 'vjudge', 'timus', 'hdu']
+oj_list = ['poj', 'zoj', 'vjudge', 'timus', 'hdu', 'tyvj']
