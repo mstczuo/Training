@@ -29,15 +29,15 @@ This folder contains scripts to count problems from many different online judges
 
 2. __Add to list__
 
-	Open `__init__.py` under this folder (`/app/oj/__init__.py`)
+	Open `oj_list.py` under this folder (`/app/oj/oj_list.py`)
 
-	Add your file to `oj_list` in line 3. Change
+	Add your file to `oj_list`. Change
 	```python
-	oj_list = ['poj', 'zju']
+	oj_list = ['poj', 'zoj']
 	```
 	To
 	```python
-	oj_list = ['poj', 'zju', 'soj']
+	oj_list = ['poj', 'zoj', 'soj']
 	```
 
 That's all. Run the script or reload your webserver, access `/count/username`, everything should work like a charm.

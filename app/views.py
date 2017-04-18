@@ -1,7 +1,7 @@
 #-*-coding:utf-8-*-
 from flask import render_template, flash, redirect, session, url_for, request, g, send_from_directory
 from flask_login import login_user, logout_user, current_user, login_required
-from app import app, db, login_manager
+from app import app, socketio, db, login_manager
 from .forms import *
 from .models import *
 from copy import deepcopy
@@ -202,7 +202,21 @@ def get_rate_data(begin, end):
 
 	return json.dumps(res)
 
-@app.route('/count/<username>')
+@socketio.on('inited', namespace='/oj_socket')
+def add_data(username):
+	print(username)
+	for oj_name in oj.oj_list:
+		socketio.start_background_task(add_oj, oj_name, username)
+
+from app import oj
+def add_oj(oj_name, username):
+	print('Getting %s from %s' % (username, oj_name))
+	res = eval('oj.%s.get("%s")' % (oj_name, username))
+	socketio.emit('add',
+		{oj_name: res},
+		namespace = '/oj_socket')
+
+from threading import Thread
+@app.route('/count/<username>', methods = ['GET'])
 def count(username):
-	from app.oj import get_all
-	return render_template('count.html', username = username, data = get_all(username))
+	return render_template('count.html', username = username)

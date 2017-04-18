@@ -3,16 +3,13 @@
 {% block page_contest %}
 
 <div class="container">
-	<h2> Problem count for <i>{{ username }}</i> </h2>
-	{% for name, d in data.items() %}
-	<h4>{{ name }}</h4>
-	{% if d.error %}
-	<p>Error: {{ d.error }}</p>
-	{% else %}
-	<p> Solved: {{ d.solved }}, Attempts: {{ d.attempts }}</p>
-	{% endif %}
-	{% endfor %}
+    <h2> Problem count for <i id="username">{{ username }}</i> </h2>
+    <div id='data'></div>
 </div>
 
 {% endblock %}
-
+{% block scripts %}
+{{ super() }}
+<script src="{{url_for('static', filename='js/socket.io.min.js')}}"> </script>
+<script src="{{url_for('static', filename='js/count.js')}}"> </script>
+{% endblock %}
