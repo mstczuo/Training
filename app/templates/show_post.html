@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block page_contest %}
+
+<div class="container">
+	<h3 class="center-text">公告
+		<button class="btn btn-warning" id="add">添加</button>
+	</h3>
+		{% for post in posts %}
+		<div class="post">
+			<h3>{{ post.title }}</h3>
+			<p>发布者：<b>{{ post.author }}</b></p>
+			<p>{{ post.content | safe }}</p>
+		</div>
+		{% endfor %}
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super()}}
+<script>
+	$('#add').on('click', () => {
+		window.location.href='{{ url_for("edit_post") }}';
+	});
+</script>
+{% endblock %}

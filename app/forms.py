@@ -17,6 +17,12 @@ class LoginForm(Form):
 		if u is None or not u.verify_password(field.data):
 			raise ValidationError(u'用户名或密码错误')
 
+class PostForm(Form):
+	title = TextField(u'标题', validators = [Required(message = u'标题是必填项')])
+	author = TextField(u'发布者', validators = [Required(message = u'发布者是必填项')])
+	content = TextAreaField(u'正文', validators = [Required(message = u'正文是必填项')])
+	submit = SubmitField(u'提交')
+
 def get_choices(itemlist, empty_name = u'空'):
 	return [(0, empty_name)] + [(item.id, item.name) for item in itemlist]
 

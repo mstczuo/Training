@@ -42,11 +42,29 @@ def logout():
 
 @app.route('/')
 def index():
-	return redirect(url_for('view_summary_list'))
+	return redirect(url_for('show_post'))
 
 @app.route('/about')
 def show_about():
 	return render_template('about.html')
+
+@app.route('/show_post', methods = ['GET'])
+def show_post():
+	posts = Post.query.all()
+	posts.sort(key = lambda u: -u.id)
+	return render_template('show_post.html', posts = posts)
+
+@app.route('/edit_post', methods = ['GET', 'POST'])
+@app.route('/edit_post/<int:id>', methods = ['GET', 'POST'])
+def edit_post(id = 0):
+	post = Post() if id == 0 else Post.query.get_or_404(id)
+	form = PostForm(obj = post)
+	if form.validate_on_submit():
+		form.populate_obj(post)
+		db.session.add(post)
+		db.session.commit()
+		return redirect(url_for('show_post'))
+	return render_template('edit_post.html', form = form, pid = id)
 
 @app.route('/view_members')
 def view_members():

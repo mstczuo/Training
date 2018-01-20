@@ -2,6 +2,12 @@
 from app import db, login_manager
 from flask_login import UserMixin, AnonymousUserMixin
 
+class Post(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	title = db.Column(db.String(256))
+	author = db.Column(db.String(256))
+	content = db.Column(db.Text)
+
 class User(UserMixin, db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	username = db.Column(db.String(20))
@@ -42,5 +48,5 @@ class AnonymousUser(AnonymousUserMixin):
 
 @login_manager.user_loader
 def load_user(id):
-    return User.query.get(id)
+	return User.query.get(id)
 
