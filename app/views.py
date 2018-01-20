@@ -54,6 +54,7 @@ def show_post():
 	posts.sort(key = lambda u: -u.id)
 	return render_template('show_post.html', posts = posts)
 
+@login_required
 @app.route('/edit_post', methods = ['GET', 'POST'])
 @app.route('/edit_post/<int:id>', methods = ['GET', 'POST'])
 def edit_post(id = 0):
@@ -65,6 +66,18 @@ def edit_post(id = 0):
 		db.session.commit()
 		return redirect(url_for('show_post'))
 	return render_template('edit_post.html', form = form, pid = id)
+
+@login_required
+@app.route('/delete_post/<int:id>')
+@login_required
+def delete_post(id):
+	item = Post.query.get_or_404(id)
+	try:
+		db.session.delete(item)
+		db.session.commit()
+	except:
+		flash(u'公告删除失败', category='error')
+	return redirect(url_for('show_post'))
 
 @app.route('/view_members')
 def view_members():

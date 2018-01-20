@@ -32,8 +32,7 @@
 				{{form.content.label}}
 			</label>
 			<div class="col-sm-10">
-				{{form.content()}}
-				<textarea class="form-control" rows="15" id="markdown"></textarea>
+				{{form.content(class_="form-control")}}
 				<small>Markdown supportted.</small>
 			</div>
 		</div>
@@ -52,24 +51,23 @@
 
 {% block scripts %}
 {{ super() }}
-	<script src="//cdnjs.cloudflare.com/ajax/libs/markdown.js/0.5.0/markdown.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/marked/0.3.12/marked.min.js"></script>
 	<script>
 'use strict';
 
 function update() {
-	const md = $(this).val();
-	const html = markdown.toHTML(md, 'Maruku');
+	const md = $('#content').val();
+	const html = marked(md);
 	$('#preview').html(html);
-	$('#content').val(html);
 }
 
-$('#markdown')
+$('#content')
 	.on('change', update)
 	.on('keyup', update);
-
 $(() => {
-	$('#content').hide();
-})
+	update();
+	$('#content').attr('rows', 15);
+});
 	</script>
 {% endblock %}
 
