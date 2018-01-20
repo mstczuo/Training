@@ -32,7 +32,9 @@
 				{{form.content.label}}
 			</label>
 			<div class="col-sm-10">
-				{{form.content(class_="form-control")}}
+				{{form.content()}}
+				<textarea class="form-control" rows="15" id="markdown"></textarea>
+				<small>Markdown supportted.</small>
 			</div>
 		</div>
 
@@ -40,7 +42,34 @@
 			{{form.submit(class="btn btn-default")}}
 		</div>
 	</form>
+	<div class="col-md-6">
+		<b>正文预览</b>
+		<p id="preview"></p>
+	</div>
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+	<script src="//cdnjs.cloudflare.com/ajax/libs/markdown.js/0.5.0/markdown.min.js"></script>
+	<script>
+'use strict';
+
+function update() {
+	const md = $(this).val();
+	const html = markdown.toHTML(md, 'Maruku');
+	$('#preview').html(html);
+	$('#content').val(html);
+}
+
+$('#markdown')
+	.on('change', update)
+	.on('keyup', update);
+
+$(() => {
+	$('#content').hide();
+})
+	</script>
 {% endblock %}
 
