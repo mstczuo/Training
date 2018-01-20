@@ -137,7 +137,7 @@ def delete_contest_summary(cid):
 		flash(u'比赛删除失败', category='error')
 	return redirect(url_for('index'))
 
-@app.route('/rate', defaults = {'begin': 27, 'end': len(ContestSummary.query.filter().all())})
+@app.route('/rate', defaults = {'begin': 35, 'end': len(ContestSummary.query.filter().all())})
 @app.route('/rate/<int:begin>/<int:end>')
 @login_required
 def rate_summary(begin, end):
