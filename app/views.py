@@ -51,7 +51,7 @@ def show_about():
 @app.route('/show_post', methods = ['GET'])
 def show_post():
 	posts = Post.query.all()
-	posts.sort(key = lambda u: -u.id)
+	posts.sort(key = lambda u: u.id, reverse = True)
 	return render_template('show_post.html', posts = posts)
 
 @login_required
@@ -100,6 +100,7 @@ def edit_member(id=0):
 @app.route('/view_summary_list')
 def view_summary_list():
 	items = ContestSummary.query.all()
+	items.sort(key = lambda i: i.date, reverse = True)
 	return render_template('view_summary_list.html', summary = items)
 
 @login_required
