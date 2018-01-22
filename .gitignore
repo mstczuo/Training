@@ -1,5 +1,8 @@
+# WSGI
+*.wsgi
+
 # The database
-app.db
+*.db
 
 # Database repository
 db_repository/

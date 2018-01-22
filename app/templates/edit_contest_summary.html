@@ -102,3 +102,12 @@
 	{% endif %}
 {% endblock %}
 
+{% block scripts %}
+{{ super() }}
+<script>
+d = new Date();
+if ($('#date').val() == '')
+    $('#date').val(d.getFullYear() + '-' + (1 + d.getMonth()) + '-' + d.getDate() + ' 12:00:00');
+</script>
+{% endblock %}
+
