@@ -33,8 +33,19 @@ class RegisterForm(Form):
 
 class AddMemberForm(Form):
 	name = TextField(u'队员姓名')
-	grade = TextField(u'年级')
-	major = TextField(u'专业')
+	# grade = TextField(u'年级')
+	grade = SelectField(u'年级', choices = [(str(y + 2014), str(y + 2014)) for y in range(4)])
+	# major = TextField(u'专业')
+	major = SelectField(u'专业', choices = [(m, m) for m in [
+		u'计算机类',
+		u'信息与计算科学',
+		u'软件工程',
+		u'计算机科学与技术',
+		u'计算机科学与技术（超级计算方向）',
+		u'信息安全',
+		u'移动信息工程',
+		u'智能科学'
+	]])
 	submit = SubmitField(u'添加')
 
 class ContestSummaryForm(Form):
@@ -77,12 +88,12 @@ class TeamInfoForm(Form):
 		if self.is_submitted():
 			formdata = dict(request.form)
 			for i in range(countp):
-				self.A.entries[i].data = formdata.has_key('A-%d' % i)
-				self.B.entries[i].data = formdata.has_key('B-%d' % i)
-				self.C.entries[i].data = formdata.has_key('C-%d' % i)
-				self.AC.entries[i].data = formdata.has_key('AC-%d' % i)
-				self.NA.entries[i].data = formdata.has_key('NA-%d' % i)
-				self.SC.entries[i].data = formdata.has_key('SC-%d' % i)
+				self.A.entries[i].data = ('A-%d' % i) in formdata
+				self.B.entries[i].data = ('B-%d' % i) in formdata
+				self.C.entries[i].data = ('C-%d' % i) in formdata
+				self.AC.entries[i].data = ('AC-%d' % i) in formdata
+				self.NA.entries[i].data = ('NA-%d' % i) in formdata
+				self.SC.entries[i].data = ('SC-%d' % i) in formdata
 		else:
 			if obj is not None:
 				self.set_acinfo(obj.acinfo)
