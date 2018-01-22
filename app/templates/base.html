@@ -23,10 +23,21 @@
 	</div>
 	<div id="navbar" class="collapse navbar-collapse">
 		<ul class="nav navbar-nav">
-			<li class="{% if request.path != url_for('view_summary_list') %}in{% endif %}active"><a href="/">Home</a></li>
-			<li class="{% if request.path != url_for('view_members') %}in{% endif %}active"><a href="{{ url_for('view_members') }}">Members</a></li>
-			<li class="{% if request.path.find('/rate') != 0 %}in{% endif %}active"><a href="/rate">Rating</a></li>
-			<li class="{% if request.path != url_for('show_about') %}in{% endif %}active"><a href="{{ url_for('show_about') }}">About</a></li>
+            <li class="{% if request.path != url_for('show_post') %}in{% endif %}active">
+                <a href="{{ url_for('show_post') }}">Post</a>
+            </li>
+            <li class="{% if request.path != url_for('view_summary_list') %}in{% endif %}active">
+                <a href="{{ url_for('view_summary_list') }}">Contests</a>
+            </li>
+			<li class="{% if request.path != url_for('view_members') %}in{% endif %}active">
+                <a href="{{ url_for('view_members') }}">Members</a>
+                </li>
+			<li class="{% if request.path.find('/rate') != 0 %}in{% endif %}active">
+                <a href="/rate">Rating</a>
+            </li>
+			<li class="{% if request.path != url_for('show_about') %}in{% endif %}active">
+                <a href="{{ url_for('show_about') }}">About</a>
+            </li>
 		</ul>
 		<ul class="nav navbar-nav pull-right">
 			{% if not logged_in %}
